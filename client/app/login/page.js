@@ -1,35 +1,31 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function RegisterPage() {
+export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Manufacturer"); // default selected role
   const [status, setStatus] = useState("");
 
   async function submitForm(e) {
     e.preventDefault();
 
-    // Map role to status
-    const roleStatusMap = {
-      Manufacturer: 1,
-      Retailer: 2,
-      Consumer: 3,
-    };
-
-    const res = await fetch("/api/register", {
+    const res = await fetch("/api/login", {
       method: "POST",
-      body: JSON.stringify({
-        email,
-        password,
-        status: roleStatusMap[role],
-      }),
+      body: JSON.stringify({ email, password }),
       headers: { "Content-Type": "application/json" },
     });
 
     const data = await res.json();
-    setStatus(data.message);
+
+    if (data.success) {
+      // Redirect to dashboard
+      router.push("/dashboard");
+    } else {
+      setStatus(data.message);
+    }
   }
 
   return (
@@ -56,7 +52,7 @@ export default function RegisterPage() {
         }}
       >
         <h1 style={{ fontSize: "2.5rem", fontWeight: "700", color: "#ff4d4d", marginBottom: "30px" }}>
-          Create Account
+          Login
         </h1>
 
         <form onSubmit={submitForm} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -96,27 +92,6 @@ export default function RegisterPage() {
             onBlur={e => (e.target.style.borderColor = "#ccc")}
           />
 
-          <select
-            value={role}
-            onChange={e => setRole(e.target.value)}
-            style={{
-              padding: "12px 15px",
-              fontSize: "1rem",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-              outline: "none",
-              cursor: "pointer",
-              transition: "border-color 0.2s",
-              backgroundColor: "#fff",
-            }}
-            onFocus={e => (e.target.style.borderColor = "#ff4d4d")}
-            onBlur={e => (e.target.style.borderColor = "#ccc")}
-          >
-            <option>Manufacturer</option>
-            <option>Retailer</option>
-            <option>Consumer</option>
-          </select>
-
           <button
             type="submit"
             style={{
@@ -139,7 +114,7 @@ export default function RegisterPage() {
               e.target.style.transform = "scale(1)";
             }}
           >
-            Register
+            Login
           </button>
         </form>
 
