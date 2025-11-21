@@ -4,7 +4,7 @@ import User from "@/lib/userModel";
 
 export async function POST(req) {
   try {
-    const { email, password } = await req.json();
+    const { email, password, status } = await req.json(); // include status
     await connectDB();
 
     const exists = await User.findOne({ email });
@@ -12,7 +12,7 @@ export async function POST(req) {
       return NextResponse.json({ message: "User already exists" }, { status: 400 });
     }
 
-    await User.create({ email, password });
+    await User.create({ email, password, status }); // ✅ pass status
 
     return NextResponse.json({ message: "Registered successfully" });
   } catch (err) {

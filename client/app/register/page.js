@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("Manufacturer"); 
@@ -29,7 +31,13 @@ export default function RegisterPage() {
     });
 
     const data = await res.json();
-    setStatus(data.message);
+
+    if (res.ok) {
+      // Registration successful → redirect to dashboard
+      router.push("/dashboard");
+    } else {
+      setStatus(data.message);
+    }
   }
 
   return (
