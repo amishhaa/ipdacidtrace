@@ -19,7 +19,7 @@ export default function MaintainerDashboard() {
   useEffect(() => {
     const role = localStorage.getItem("role");
 
-    // ❌ If not maintainer, block access
+    // ❌ Block unauthorized access
     if (role !== "0") {
       alert("Unauthorized: Only Maintainers can access this page.");
       router.push("/dashboard");
@@ -45,6 +45,11 @@ export default function MaintainerDashboard() {
     }
 
     setLoading(false);
+  }
+
+  // Check anomaly: (status 1 or 2) AND balance != 0
+  function isAnomaly(user) {
+    return (user.status === 1 || user.status === 2) && user.balance !== 0;
   }
 
   return (
@@ -122,9 +127,17 @@ export default function MaintainerDashboard() {
                 <th style={th}>Balance</th>
               </tr>
             </thead>
+
             <tbody>
               {users.map((u, idx) => (
-                <tr key={idx} style={{ borderBottom: "1px solid #eee" }}>
+                <tr
+                  key={idx}
+                  style={{
+                    borderBottom: "1px solid #eee",
+                    backgroundColor: isAnomaly(u) ? "#ffcccc" : "transparent",
+                    fontWeight: isAnomaly(u) ? "600" : "400",
+                  }}
+                >
                   <td style={td}>{u.email}</td>
                   <td style={td}>{roleNames[u.status]}</td>
                   <td style={td}>₹ {u.balance}</td>
@@ -148,3 +161,4 @@ const td = {
   padding: "12px",
   fontSize: "0.9rem",
 };
+
