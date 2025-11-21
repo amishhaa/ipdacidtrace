@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Manufacturer"); // default selected role
+  const [role, setRole] = useState("Manufacturer"); 
   const [status, setStatus] = useState("");
 
   async function submitForm(e) {
